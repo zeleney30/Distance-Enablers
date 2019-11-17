@@ -27,6 +27,8 @@ local menu = {
 	mddistancelider = slider("Rage", "Other", "Min damage: distance", 0, 1000, 0, true),
 	mdnormal = slider("Rage", "Other", "Min damage: normal", 0, 100, 0, true),
 	mdnew = slider("Rage", "Other", "Min damage: new", 0, 100, 0, true),
+
+	distancedebug = checkbox("Misc", "Settings", "Distance debug")
 }
 
 local dt, dtt = reference("Rage", "Other", "Double tap")
@@ -34,6 +36,16 @@ local os, ost = reference("AA", "Other", "On shot anti-aim")
 local fs, fst = reference("AA", "Anti-aimbot angles", "Freestanding")
 local hc = reference("Rage", "Aimbot", "Minimum hit chance")
 local md = reference("Rage", "Aimbot", "Minimum damage")
+
+--ROUNDING FUNCTION--
+local function round(num, numDecimalPlaces)
+	local mult = 10 ^ (numDecimalPlaces or 0)
+
+	if num >= 0 then return math.floor(num * mult + 0.5) / mult
+	else 
+		return math.ceil(num * mult - 0.5) / mult
+	end
+end
 
 local function getNearestDist()
     local nearestDist
@@ -54,12 +66,6 @@ local function getNearestDist()
         return feet;
     end
 end
-
---[[local function visibility()
-
-end
-
-client.set_event_callback('run_command', visibility)]]
 
 local function paint(ctx)
 	--DOUBLE TAP--
@@ -195,6 +201,14 @@ local function paint(ctx)
     	vis(menu.mddistancelider, false)
     	vis(menu.mdnormal, false)
     	vis(menu.mdnew, false)
+    end
+
+    --DEBUG--
+    local w, h = client.screen_size()
+
+    if getui(menu.distancedebug) then
+    	client.log("Distance to nearest player: "..round(getNearestDist(), 2))
+    	renderer.text(w - 180, h - 20, 255, 255, 255, 255, "", 0, "Distance to nearest player: "..round(getNearestDist(), 2))
     end
 end
 
