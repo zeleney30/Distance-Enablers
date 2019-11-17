@@ -207,8 +207,13 @@ local function paint(ctx)
     local w, h = client.screen_size()
 
     if getui(menu.distancedebug) then
-    	client.log("Distance to nearest player: "..round(getNearestDist(), 2))
-    	renderer.text(w - 180, h - 20, 255, 255, 255, 255, "", 0, "Distance to nearest player: "..round(getNearestDist(), 2))
+    	if getNearestDist() ~= nil then
+	    	client.log("Distance to nearest player: "..round(getNearestDist(), 2))
+	    	renderer.text(w - 180, h - 20, 255, 255, 255, 255, "", 0, "Distance to nearest player: "..round(getNearestDist(), 2))
+	    else
+	    	client.log("Distance to nearest player: No player in range")
+	    	renderer.text(w - 180, h - 20, 255, 255, 255, 255, "", 0, "Distance to nearest player: Nil")
+	    end
     end
 end
 
