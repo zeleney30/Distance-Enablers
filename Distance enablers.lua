@@ -4,26 +4,32 @@ local slider = ui.new_slider
 local setui = ui.set
 local reference = ui.reference
 local vis = ui.set_visible
+local hotkey = ui.new_hotkey
 
 local menu = {
 	dtenable = checkbox("Rage", "Other", "Enable double tap at distance"),
+	dthk = hotkey("Rage", "Other", "Double tap hotkey", true),
 	dtreverse = checkbox("Rage", "Other", "Double tap: reverse"),
 	dtdistanceslider = slider("Rage", "Other", "Double tap: distance", 0, 1000, 0, true),
 
 	osenable = checkbox("AA", "Other", "Enable on shot at distance"),
+	oshk = hotkey("AA", "Other", "On shot hotkey", true),
 	osreverse = checkbox("AA", "Other", "On shot: reverse"),
 	osdistanceslider = slider("AA", "Other", "On shot: distance", 0, 1000, 0, true),
 
 	fsenable = checkbox("AA", "Other", "Enable freestanding at distance"),
+	fshk = hotkey("AA", "Other", "Freestanding hotkey", true),
 	fsreverse = checkbox("AA", "Other", "Freestanding: reverse"),
 	fsdistanceslider = slider("AA", "Other", "Freestanding: distance", 0, 1000, 0, true),
 
 	hcenable = checkbox("Rage", "Other", "Change hit chance at distance"),
+	hchk = hotkey("Rage", "Other", "Hit chance hotkey", true),
 	hcdistancelider = slider("Rage", "Other", "Hit chance: distance", 0, 1000, 0, true),
 	hcnormal = slider("Rage", "Other", "Hit chance: normal", 0, 100, 0, true),
 	hcnew = slider("Rage", "Other", "Hit chance: new", 0, 100, 0, true),
 
 	mdenable = checkbox("Rage", "Other", "Change min damage at distance"),
+	mdhk = hotkey("Rage", "Other", "Min damage hotkey", true),
 	mddistancelider = slider("Rage", "Other", "Min damage: distance", 0, 1000, 0, true),
 	mdnormal = slider("Rage", "Other", "Min damage: normal", 0, 100, 0, true),
 	mdnew = slider("Rage", "Other", "Min damage: new", 0, 100, 0, true),
@@ -70,29 +76,35 @@ end
 local function paint(ctx)
 	--DOUBLE TAP--
     if getui(menu.dtenable) then
+    	vis(menu.dthk, true)
     	vis(menu.dtreverse, true)
     	vis(menu.dtdistanceslider, true)
 
         if getNearestDist() ~= nil then
         	if getui(menu.dtreverse) then
-	            if getNearestDist() <= getui(menu.dtdistanceslider) then
-	            	renderer.indicator(255, 0, 0, 255, "DT")
-	            	setui(dtt, "On hotkey")
-	            else
-	            	renderer.indicator(0, 255, 0, 255, "DT")
-	                setui(dtt, "Always on")
-	            end
+        		if getui(menu.dthk) then
+		            if getNearestDist() <= getui(menu.dtdistanceslider) then
+		            	renderer.indicator(255, 0, 0, 255, "DT")
+		            	setui(dtt, "On hotkey")
+		            else
+		            	renderer.indicator(0, 255, 0, 255, "DT")
+		                setui(dtt, "Always on")
+		            end
+		        end
 	        else
-	        	if getNearestDist() <= getui(menu.dtdistanceslider) then
-	                renderer.indicator(0, 255, 0, 255, "DT")
-	                setui(dtt, "Always on")
-	            else
-	            	renderer.indicator(255, 0, 0, 255, "DT")
-	            	setui(dtt, "On hotkey")
-	            end
+	        	if getui(menu.dthk) then
+		        	if getNearestDist() <= getui(menu.dtdistanceslider) then
+		                renderer.indicator(0, 255, 0, 255, "DT")
+		                setui(dtt, "Always on")
+		            else
+		            	renderer.indicator(255, 0, 0, 255, "DT")
+		            	setui(dtt, "On hotkey")
+		            end
+		        end
 	        end
         end
     else
+    	vis(menu.dthk, false)
     	vis(menu.dtreverse, false)
     	vis(menu.dtdistanceslider, false)
 
@@ -101,29 +113,35 @@ local function paint(ctx)
 
     --ON SHOT ANTI-AIM--
     if getui(menu.osenable) then
+    	vis(menu.oshk, true)
     	vis(menu.osreverse, true)
     	vis(menu.osdistanceslider, true)
 
     	if getNearestDist() ~= nil then
     		if getui(menu.osreverse) then
-	            if getNearestDist() <= getui(menu.osdistanceslider) then
-	            	renderer.indicator(255, 0, 0, 255, "OS")
-	            	setui(ost, "On hotkey")
-	            else
-	            	renderer.indicator(0, 255, 0, 255, "OS")
-	                setui(ost, "Always on")
-	            end
+    			if getui(menu.oshk) then
+		            if getNearestDist() <= getui(menu.osdistanceslider) then
+		            	renderer.indicator(255, 0, 0, 255, "OS")
+		            	setui(ost, "On hotkey")
+		            else
+		            	renderer.indicator(0, 255, 0, 255, "OS")
+		                setui(ost, "Always on")
+		            end
+		        end
 	        else
-	        	if getNearestDist() <= getui(menu.osdistanceslider) then
-	                renderer.indicator(0, 255, 0, 255, "OS")
-	                setui(ost, "Always on")
-	            else
-	            	renderer.indicator(255, 0, 0, 255, "OS")
-	            	setui(ost, "On hotkey")
-	            end
+	        	if getui(menu.oshk) then
+		        	if getNearestDist() <= getui(menu.osdistanceslider) then
+		                renderer.indicator(0, 255, 0, 255, "OS")
+		                setui(ost, "Always on")
+		            else
+		            	renderer.indicator(255, 0, 0, 255, "OS")
+		            	setui(ost, "On hotkey")
+		            end
+		        end
 	        end
         end
     else
+    	vis(menu.oshk, false)
     	vis(menu.osreverse, false)
     	vis(menu.osdistanceslider, false)
 
@@ -132,29 +150,35 @@ local function paint(ctx)
 
     --FREESTANDING--
     if getui(menu.fsenable) then
+    	vis(menu.fshk, true)
     	vis(menu.fsreverse, true)
     	vis(menu.fsdistanceslider, true)
 
     	if getNearestDist() ~= nil then
     		if getui(menu.fsreverse) then
-	            if getNearestDist() <= getui(menu.fsdistanceslider) then
-	            	renderer.indicator(255, 0, 0, 255, "FS")
-	            	setui(fst, "On hotkey")
-	            else
-	            	renderer.indicator(0, 255, 0, 255, "FS")
-	                setui(fst, "Always on")
-	            end
+    			if getui(menu.fshk) then
+		            if getNearestDist() <= getui(menu.fsdistanceslider) then
+		            	renderer.indicator(255, 0, 0, 255, "FS")
+		            	setui(fst, "On hotkey")
+		            else
+		            	renderer.indicator(0, 255, 0, 255, "FS")
+		                setui(fst, "Always on")
+		            end
+		        end
 	        else
-	        	if getNearestDist() <= getui(menu.fsdistanceslider) then
-	                renderer.indicator(0, 255, 0, 255, "FS")
-	                setui(fst, "Always on")
-	            else
-	            	renderer.indicator(255, 0, 0, 255, "FS")
-	            	setui(fst, "On hotkey")
-	            end
+	        	if getui(menu.fshk) then
+		        	if getNearestDist() <= getui(menu.fsdistanceslider) then
+		                renderer.indicator(0, 255, 0, 255, "FS")
+		                setui(fst, "Always on")
+		            else
+		            	renderer.indicator(255, 0, 0, 255, "FS")
+		            	setui(fst, "On hotkey")
+		            end
+		        end
 	        end
         end
     else
+    	vis(menu.fshk, false)
     	vis(menu.fsreverse, false)
     	vis(menu.fsdistanceslider, false)
 
@@ -163,20 +187,24 @@ local function paint(ctx)
 
     --HIT CHANCE--
     if getui(menu.hcenable) then
+    	vis(menu.hchk, true)
     	vis(menu.hcdistancelider, true)
     	vis(menu.hcnormal, true)
     	vis(menu.hcnew, true)
 
     	if getNearestDist() ~= nil then
-            if getNearestDist() <= getui(menu.hcdistancelider) then
-                renderer.indicator(0, 255, 0, 255, "HC")
-                setui(hc, getui(menu.hcnew))
-            else
-            	renderer.indicator(255, 0, 0, 255, "HC")
-            	setui(hc, getui(menu.hcnormal))
-            end
+    		if getui(menu.hchk) then
+	            if getNearestDist() <= getui(menu.hcdistancelider) then
+	                renderer.indicator(0, 255, 0, 255, "HC")
+	                setui(hc, getui(menu.hcnew))
+	            else
+	            	renderer.indicator(255, 0, 0, 255, "HC")
+	            	setui(hc, getui(menu.hcnormal))
+	            end
+	        end
         end
     else
+    	vis(menu.hchk, false)
     	vis(menu.hcdistancelider, false)
     	vis(menu.hcnormal, false)
     	vis(menu.hcnew, false)
@@ -184,20 +212,24 @@ local function paint(ctx)
 
     --MINIMUM DAMAGE--
     if getui(menu.mdenable) then
+    	vis(menu.mdhk, true)
     	vis(menu.mddistancelider, true)
     	vis(menu.mdnormal, true)
     	vis(menu.mdnew, true)
 
     	if getNearestDist() ~= nil then
-            if getNearestDist() <= getui(menu.mddistancelider) then
-                renderer.indicator(0, 255, 0, 255, "MD")
-                setui(md, getui(menu.mdnew))
-            else
-            	renderer.indicator(255, 0, 0, 255, "MD")
-            	setui(md, getui(menu.mdnormal))
-            end
+    		if getui(menu.mdhk) then
+	            if getNearestDist() <= getui(menu.mddistancelider) then
+	                renderer.indicator(0, 255, 0, 255, "MD")
+	                setui(md, getui(menu.mdnew))
+	            else
+	            	renderer.indicator(255, 0, 0, 255, "MD")
+	            	setui(md, getui(menu.mdnormal))
+	            end
+	        end
         end
     else
+    	vis(menu.mdhk, false)
     	vis(menu.mddistancelider, false)
     	vis(menu.mdnormal, false)
     	vis(menu.mdnew, false)
